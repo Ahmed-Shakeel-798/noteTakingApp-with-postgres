@@ -19,6 +19,14 @@ router.post("/createUser", async (req, res) => {
     try {
         const { name, password } = req.body;
 
+        const exists = await db.query(
+            'SELECT * FROM users where name=$1', [name]
+        )
+
+        if (exists.rows.length != 0) {
+            return res.status(400).send({ error: "User already exists" });
+        }
+
         const result = await db.query(
             `INSERT INTO users (name, password) 
                VALUES ($1, $2)
