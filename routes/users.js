@@ -44,12 +44,36 @@ router.post("/read", async (req, res) => {
         const { name, password } = req.body;
 
         const result = await db.query(
-            'SELECT * FROM users where name=$1 AND password=$2 ', [name, password]
+            'SELECT * FROM users where name=$1 AND password=$2', [name, password]
         )
         if (result.rows.length != 0) {
             return res.status(200).json(result.rows);
         }
         return res.status(404).send({ error: "user not found" })
+
+    } catch (error) {
+        res.status(404).send({ error: error });
+    }
+})
+
+// delete user
+router.delete("/deleteMe", async (req, res) => {
+    try {
+        const { name, password } = req.body;
+
+        const exists = await db.query(
+            'SELECT * FROM users where name=$1 and password=$2', [name, password]
+        )
+
+        if (exists.rows.length == 0) {
+            return res.status(400).send({ error: "No such user" });
+        }
+
+        const id = exists.rows[0].id;
+        const result = await db.query(
+            'DELETE FROM users WHERE id = $1', [id]
+        )
+        return res.status(200).send({ message: "deleted successfully" });
 
     } catch (error) {
         res.status(404).send({ error: error });
