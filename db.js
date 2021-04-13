@@ -3,7 +3,7 @@ const { Client } = require("pg");
 // Two ways to define connection
 // The first one here is called URI
 
-const connectString = 'postgresql://sysadmin:123@127.0.0.1/testdb';
+const connectString = 'postgresql://sysadmin:123@127.0.0.1/notes';
 let db = new Client({
     connectionString: connectString
 });
